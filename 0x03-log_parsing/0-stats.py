@@ -1,38 +1,44 @@
-#!/usr/bin/env/ python3
-""" Parsing the log """
+#!/usr/bin/python3
+"""Parse logs"""
 
 
-def print_stats(status, file_size):
-    """  print the stats"""
-    print(f"File size: {file_size}")
+def print_status(status, sizes):
+    """ print stats"""
+    print(f"File size: {sizes}")
     for key, value in sorted(status.items()):
         if value != 0:
-            print("{:s}: {:d}".format(key, value))
+            print(f"{key}: {value}")
 
 
-count = 0
-file_size = 0
-status_codes = {"200": 0, "301": 0, "400": 0, "401": 0,
-                "403": 0, "404": 0, "405": 0, "500": 0}
-
+occurence = 0
+get_size = 0
+status_info = {"200": 0, "301": 0, "400": 0, "401": 0,
+              "403": 0, "404": 0, "405": 0, "500": 0}
 
 try:
     while True:
         try:
             get_line = input()
+            line_content = get_line.strip().split()
+
             if not get_line:
                 break
-            line_content = get_line.strip().split()
+
             if len(line_content) > 2:
-                file_size += int(line_content[-1])
-                status_code = line_content[-2]
-                if status_code in status_codes:
-                    status_codes[status_code] += 1
-                count += 1
-                if count == 10:
-                    print_stats(status_codes, file_size)
-                    count = 0
-        except (EOFError, KeyboardInterrupt):
+                size = int(line_content[-1])
+                stat_code = line_content[-2]
+
+                if stat_code in status_info:
+                    status_info[stat_code] += 1
+
+                get_size += size
+                occurence += 1
+
+                if occurence == 10:
+                    print_status(status_info, get_size)
+                    occurence = 0
+
+        except (KeyboardInterrupt, EOFError):
             break
 finally:
-    print_stats(status_codes, file_size)
+    print_status(status_info, get_size)
