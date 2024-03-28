@@ -17,7 +17,7 @@ status_codes = {"200": 0, "301": 0, "400": 0, "401": 0,
 
 
 try:
-    while 1:
+    while True:
         try:
             get_line = input()
             if not get_line:
