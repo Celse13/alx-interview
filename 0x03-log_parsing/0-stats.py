@@ -1,44 +1,38 @@
-#!/usr/bin/python3
-"""Log parsing"""
+#!/usr/bin/env/ python3
+""" Parsing the log """
 
 
-def compute_metrics(status_code, file_sz):
-    """Compute metrics"""
-    print(f"File size: {file_sz}")
-    for key, val in sorted(status_code.items()):
-        if val != 0:
-            print(f"{key}: {val}")
+def print_stats(status, file_size):
+    """  print the stats"""
+    print(f"File size: {file_size}")
+    for key, value in sorted(status.items()):
+        if value != 0:
+            print("{:s}: {:d}".format(key, value))
 
 
 count = 0
 file_size = 0
-stat_codes = {"200": 0, "301": 0, "400": 0, "401": 0,
-              "403": 0, "404": 0, "405": 0, "500": 0}
+status_codes = {"200": 0, "301": 0, "400": 0, "401": 0,
+                "403": 0, "404": 0, "405": 0, "500": 0}
+
 
 try:
-    while True:
+    while 1:
         try:
-            line = input()
-            data = line.strip().split()
-
-            if not line:
+            get_line = input()
+            if not get_line:
                 break
-
-            if len(data) > 2:
-                size = int(data[-1])
-                stat_code = data[-2]
-
-                if stat_code in stat_codes:
-                    stat_codes[stat_code] += 1
-
-                file_size += size
+            line_content = get_line.strip().split()
+            if len(line_content) > 2:
+                file_size += int(line_content[-1])
+                status_code = line_content[-2]
+                if status_code in status_codes:
+                    status_codes[status_code] += 1
                 count += 1
-
                 if count == 10:
-                    compute_metrics(stat_codes, file_size)
+                    print_stats(status_codes, file_size)
                     count = 0
-
-        except (KeyboardInterrupt, EOFError):
+        except (EOFError, KeyboardInterrupt):
             break
 finally:
-    compute_metrics(stat_codes, file_size)
+    print_stats(status_codes, file_size)
