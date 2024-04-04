@@ -1,27 +1,27 @@
 #!/usr/bin/python3
-"""validates UTF-8 encoding of a list of integers"""
+"""validUTF8 module"""
 
 
 def validUTF8(data):
-    """validates UTF-8 encoding of a list of integers"""
-    byte_counter = 0
-    mask_1 = 1 << 7
-    mask_2 = 1 << 6
+    """validUTF8 function"""
+    byte_count = 0
+    bit_mask_1 = 1 << 7
+    bit_mask_2 = 1 << 6
 
-    for num in data:
-        mask = 1 << 7
-        if byte_counter == 0:
-            while mask & num:
-                byte_counter += 1
-                mask = mask >> 1
+    for number in data:
+        bit_mask = 1 << 7
+        if byte_count == 0:
+            while bit_mask & number:
+                byte_count += 1
+                bit_mask = bit_mask >> 1
 
-            if byte_counter == 0:
+            if byte_count == 0:
                 continue
 
-            if byte_counter == 1 or byte_counter > 4:
+            if byte_count == 1 or byte_count > 4:
                 return False
         else:
-            if not (num & mask_1 and not (num & mask_2)):
+            if not (number & bit_mask_1 and not (number & bit_mask_2)):
                 return False
-        byte_counter -= 1
-    return byte_counter == 0
+        byte_count -= 1
+    return byte_count == 0
