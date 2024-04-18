@@ -1,5 +1,5 @@
-#!/home/rugira/.nvm/versions/node/v21.7.1/bin/node
-import request from 'request';
+#!/usr/bin/node
+const request = require('request');
 
 function getCharacterName (url) {
   return new Promise((resolve, reject) => {
