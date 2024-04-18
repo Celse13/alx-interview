@@ -1,30 +1,26 @@
 #!/usr/bin/node
-const request = require('request');
-const movieId = process.argv[2];
-const movieURL = `https://swapi-api.alx-tools.com/api/films/${movieId}/`;
+const request = require('require');
 
-function fetchUrl (url) {
+function getCharacterName (url) {
   return new Promise((resolve, reject) => {
-    request(url, { json: true }, (error, resonse, body) => {
+    request(url, (error, response, body) => {
       if (error) reject(error);
-      resolve(body);
+      else resolve(JSON.parse(body).name);
     });
   });
 }
 
-async function getCharacters (movieId) {
-  const url = movieURL;
-
-  try {
-    const movie = await fetchUrl(url);
-
-    for (const characterUrl of movie.characters) {
-      const character = await fetchUrl(characterUrl);
-      console.log(character.name);
+function printCharacters (movieId) {
+  request(`https://swapi.dev/api/films/${movieId}/`, (error, response, body) => {
+    if (error) console.error(error);
+    else {
+      const characters = JSON.parse(body).characters;
+      for (const url of characters) {
+        getCharacterName(url).then(console.log);
+      }
     }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
+  });
 }
 
-getCharacters(movieId);
+const movieId = process.argv[2];
+printCharacters(movieId);
