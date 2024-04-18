@@ -1,26 +1,29 @@
 #!/usr/bin/node
-const request = require('require');
+const request = require('request');
+const apiUrl = `https://swapi.dev/api/films/${process.argv[2]}`;
 
-function getCharacterName (url) {
-  return new Promise((resolve, reject) => {
-    request(url, (error, response, body) => {
-      if (error) reject(error);
-      else resolve(JSON.parse(body).name);
-    });
-  });
-}
-
-function printCharacters (movieId) {
-  request(`https://swapi.dev/api/films/${movieId}/`, (error, response, body) => {
-    if (error) console.error(error);
-    else {
-      const characters = JSON.parse(body).characters;
-      for (const url of characters) {
-        getCharacterName(url).then(console.log);
-      }
+const getChar = (url) => new Promise((resolve, reject) =>
+  request(url, (error, response, charBody) => {
+    if (error || response.statusCode !== 200) {
+      reject(error || `Response status: ${response.statusCode}`);
+    } else {
+      resolve(JSON.parse(charBody).name);
     }
-  });
-}
+  })
+);
 
-const movieId = process.argv[2];
-printCharacters(movieId);
+request(apiUrl, async (err, res, body) => {
+  if (!err && res.statusCode === 200) {
+    const data = JSON.parse(body);
+    try {
+      const chars = await Promise.all(data.characters.map(getChar));
+      chars.forEach((charName) => {
+        console.log(charName);
+      });
+    } catch (error) {
+      console.error(`Error getting character names: ${error}`);
+    }
+  } else {
+    console.error(err || `Response status: ${res.statusCode}`);
+  }
+});
