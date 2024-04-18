@@ -1,25 +1,30 @@
 #!/usr/bin/node
-const request = require('require');
+import request from 'request';
+import util from 'util';
 
-function getCharacterName (url) {
-  return new Promise((resolve, reject) => {
-    request(url, (error, response, body) => {
-      if (error) reject(error);
-      else resolve(JSON.parse(body).name);
-    });
-  });
+const requestPromise = util.promisify(request);
+
+async function getCharacterName (url) {
+  try {
+    const response = await requestPromise(url);
+    return JSON.parse(response.body).name;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-function printCharacters (movieId) {
-  request(`https://swapi.dev/api/films/${movieId}/`, (error, response, body) => {
-    if (error) console.error(error);
-    else {
-      const characters = JSON.parse(body).characters;
-      for (const url of characters) {
-        getCharacterName(url).then(console.log);
-      }
+async function printCharacters (movieId) {
+  try {
+    const response = await requestPromise(`https://swapi.dev/api/films/${movieId}/`);
+    const body = JSON.parse(response.body);
+    const characters = body.characters;
+    for (const character of characters) {
+      const name = await getCharacterName(character);
+      console.log(name);
     }
-  });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const movieId = process.argv[2];
