@@ -5,6 +5,9 @@ def makeChange(coins, total):
     '''Return the minimum number of coins needed to
         make change for the total
     '''
+    if total <= 0:
+        return 0
+
     dp = [total + 1] * (total + 1)
     dp[0] = 0
 
