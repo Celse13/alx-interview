@@ -3,18 +3,18 @@
 
 
 def makeChange(coins, total):
-    '''Return the minimum number of coins needed to
-        make change for the total
-    '''
+    """ makeChange"""
     if total <= 0:
         return 0
 
-    dp = [total + 1] * (total + 1)
-    dp[0] = 0
+    coins.sort(reverse=True)
+    number_of_coins = 0
+    for _coin in coins:
+        if total <= 0:
+            break
+        number_of_coins += total // _coin
+        total %= _coin
 
-    for i in range(1, total + 1):
-        for coin in coins:
-            if coin <= i:
-                dp[i] = min(dp[i], 1 + dp[i - coin])
-
-    return dp[total] if dp[total] <= total else -1
+    if total != 0:
+        return -1
+    return number_of_coins
