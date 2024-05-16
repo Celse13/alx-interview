@@ -1,20 +1,20 @@
 #!/usr/bin/python3
-"""checks who wins the game"""
+"""Prime Game"""
 
 
-def isWinner(rounds, numbers):
+def isWinner(x, nums):
     """Prime Game"""
-    if not numbers or rounds < 1:
+    if not nums or x < 1:
         return None
-    max_num = max(numbers)
-    prime_flags = [True for _ in range(max(max_num + 1, 2))]
-    prime_flags[0] = prime_flags[1] = False
-    for index in range(2, int(max_num ** 0.5) + 1):
-        if prime_flags[index]:
-            for j in range(index * index, max_num + 1, index):
-                prime_flags[j] = False
-    prime_numbers = [i for i, is_prime in enumerate(prime_flags) if is_prime]
-    victories = 0
-    for num in numbers:
-        victories += sum(prime <= num for prime in prime_numbers) % 2 == 1
-    return "Maria" if victories * 2 == len(numbers) else "Ben"
+    n = max(nums)
+    primes = [True for _ in range(max(n + 1, 2))]
+    primes[0] = primes[1] = False
+    for i in range(2, int(n ** 0.5) + 1):
+        if primes[i]:
+            for j in range(i * i, n + 1, i):
+                primes[j] = False
+    primes = [i for i, p in enumerate(primes) if p]
+    wins = 0
+    for n in nums:
+        wins += sum(p <= n for p in primes) % 2 == 1
+    return "Maria" if wins * 2 == len(nums) else "Ben"
