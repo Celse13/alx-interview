@@ -3,7 +3,7 @@
 
 
 def isWinner(rounds, numbers):
-    """Prime Game"""
+    """checks who wins the game"""
     if not numbers or rounds < 1:
         return None
     max_num = max(numbers)
